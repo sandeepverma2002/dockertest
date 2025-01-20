@@ -1,4 +1,5 @@
 FROM openjdk:17-jdk-slim
 EXPOSE 8080
-ADD target/crudapi.jar crudapi.jar
-ENTRYPOINT [ "java","-jar","/crudapi.jar" ]
+WORKDIR /app
+COPY target/crudapi.jar /app/app.jar
+ENTRYPOINT [ "java","-jar","/app/app.jar" ]
