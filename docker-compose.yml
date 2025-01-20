@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # PostgreSQL service
+  postgres:
+    image: postgres:latest
+    container_name: postgres-container
+    environment:
+      POSTGRES_DB: db2
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  # Spring Boot application service
+  springboot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: crud-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/db2
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 1234
+    networks:
+      - app-network
+
+# Define a network for communication between containers
+networks:
+  app-network:
+    driver: bridge
+
+# Volumes to persist PostgreSQL data
+volumes:
+  postgres_data:
